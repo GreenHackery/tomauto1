@@ -1,10 +1,10 @@
 <launch>
     <let name="urdf_path" 
-         value="$(find-pkg-share base_4wd_description)/urdf/base_4wd.urdf.xacro" />
+         value="$(find-pkg-share tomauto1_description)/urdf/tomauto1.urdf.xacro" />
     <let name="gazebo_config_path"
-         value="$(find-pkg-share base_4wd_bringup)/config/gazebo_bridge.yaml" />
+         value="$(find-pkg-share tomauto1_bringup)/config/gazebo_bridge.yaml" />
     <let name="rviz_config_path"
-         value="$(find-pkg-share base_4wd_description)/rviz/nav2_lidar.rviz" />
+         value="$(find-pkg-share tomauto1_description)/rviz/nav2_lidar.rviz" />
 
     <node pkg="robot_state_publisher" exec="robot_state_publisher">
         <param name="robot_description"
@@ -14,7 +14,7 @@
     
 
     <include file="$(find-pkg-share ros_gz_sim)/launch/gz_sim.launch.py">
-        <arg name="gz_args" value="$(find-pkg-share base_4wd_bringup)/worlds/dpt3.sdf -r" />
+        <arg name="gz_args" value="$(find-pkg-share tomauto1_bringup)/worlds/dpt3.sdf -r" />
     </include>
 
     <node pkg="ros_gz_sim" exec="create" args="-topic robot_description" />
@@ -26,11 +26,10 @@
     <node pkg="rviz2" exec="rviz2" output="screen" 
           args="-d $(var rviz_config_path)" />
 
-    <include file="$(find-pkg-share nav2_bringup)/launch/bringup_launch.py">
-        <arg name="map"
-             value="/home/daniel/projects/foodlikeair/baseline_4wd/src/base_4wd_bringup/maps/dpt3/dpt3.yaml"/>
 
-        <arg name="use_sim_time" value="True"/>
+    <include file="$(find-pkg-share slam_toolbox)/launch/online_async_launch.py">
+        <arg name="params_file" value="$(find-pkg-share tomauto1_bringup)/config/mapper_params_online_async.yaml" />
+        <arg name="use_sim_time" value="true" />
     </include>
     
     <!-- <node 
@@ -38,10 +37,6 @@
         exec="static_transform_publisher" 
         name="scan_to_map" 
         args="0 0 0 0 0 0 map scan" /> -->
-<!-- 
-    <include file="$(find-pkg-share slam_toolbox)/launch/online_async_launch.py">
-        <arg name="params_file" value="$(find-pkg-share base_4wd_bringup)/config/mapper_params_online_async.yaml" />
-        <arg name="use_sim_time" value="true" />
-    </include> -->
+
 
 </launch>

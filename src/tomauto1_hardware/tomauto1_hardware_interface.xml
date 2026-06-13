@@ -1,4 +1,4 @@
-<library path="base_4wd_hardware">
+<library path="tomauto1_hardware">
     <class name="mobile_base_hardware/MobileBaseHardwareInterface"
            type="mobile_base_hardware::MobileBaseHardwareInterface"
            base_class_type="hardware_interface::SystemInterface">

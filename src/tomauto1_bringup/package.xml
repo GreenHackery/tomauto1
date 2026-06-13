@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
 <package format="3">
-  <name>base_4wd_bringup</name>
+  <name>tomauto1_bringup</name>
   <version>0.0.0</version>
   <description>TODO: Package description</description>
   <maintainer email="greenhackery@icloud.com">Fika</maintainer>
@@ -11,7 +11,7 @@
 
   <exec_depend>robot_state_publisher</exec_depend>
   <exec_depend>controller_manager</exec_depend>
-  <exec_depend>base_4wd_description</exec_depend>
+  <exec_depend>tomauto1_description</exec_depend>
   <exec_depend>rviz2</exec_depend>
 
   <exec_depend>ros_gz_sim</exec_depend>
