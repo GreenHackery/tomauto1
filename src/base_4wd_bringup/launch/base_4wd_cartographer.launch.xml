@@ -1,0 +1,42 @@
+<launch>
+    <let name="urdf_path" 
+         value="$(find-pkg-share base_4wd_description)/urdf/base_4wd.urdf.xacro" />
+    <let name="gazebo_config_path"
+         value="$(find-pkg-share base_4wd_bringup)/config/gazebo_bridge.yaml" />
+    <let name="rviz_config_path"
+         value="$(find-pkg-share base_4wd_description)/rviz/nav2_lidar.rviz" />
+
+    <node pkg="robot_state_publisher" exec="robot_state_publisher">
+        <param name="robot_description"
+               value="$(command 'xacro $(var urdf_path)')" />
+        <param name="use_sim_time" value="true" />
+    </node>
+    
+
+    <include file="$(find-pkg-share ros_gz_sim)/launch/gz_sim.launch.py">
+        <arg name="gz_args" value="$(find-pkg-share base_4wd_bringup)/worlds/dpt3.sdf -r" />
+    </include>
+
+    <node pkg="ros_gz_sim" exec="create" args="-topic robot_description" />
+
+    <node pkg="ros_gz_bridge" exec="parameter_bridge">
+        <param name="config_file" value="$(var gazebo_config_path)" />
+    </node>
+
+    <node pkg="rviz2" exec="rviz2" output="screen" 
+          args="-d $(var rviz_config_path)" />
+
+
+    <include file="$(find-pkg-share slam_toolbox)/launch/online_async_launch.py">
+        <arg name="params_file" value="$(find-pkg-share base_4wd_bringup)/config/mapper_params_online_async.yaml" />
+        <arg name="use_sim_time" value="true" />
+    </include>
+    
+    <!-- <node 
+        pkg="tf2_ros" 
+        exec="static_transform_publisher" 
+        name="scan_to_map" 
+        args="0 0 0 0 0 0 map scan" /> -->
+
+
+</launch>
