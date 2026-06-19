@@ -30,6 +30,9 @@
         <arg name="map"
              value="/home/daniel/projects/foodlikeair/tomauto1/src/tomauto1_bringup/maps/dpt3/dpt3.yaml"/>
 
+        <arg name="params_file"
+             value="$(find-pkg-share tomauto1_bringup)/config/nav2_params.yaml"/>
+
         <arg name="use_sim_time" value="True"/>
     </include>
     
