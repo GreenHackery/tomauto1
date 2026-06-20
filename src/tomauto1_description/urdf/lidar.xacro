@@ -6,7 +6,7 @@
       <visual>
           <geometry>
               <!-- Example dimensions for a common Lidar -->
-              <cylinder radius="0.05" length="0.04"/>
+              <cylinder radius="0.019" length="0.038"/>
           </geometry>
           <!-- Position the visual relative to the link's origin -->
           <origin xyz="0 0 0" rpy="0 0 0"/>
@@ -31,7 +31,7 @@
       <parent link="base_link"/>
       <child link="base_scan"/>
       <!-- Position the lidar on top of the parent link (adjust xyz values as needed) -->
-      <origin xyz="0.215 0 0.225" rpy="0 0 0"/>
+      <origin xyz="0.135 0 0.125" rpy="0 0 0"/>
   </joint>
 
   <gazebo reference="base_scan">

@@ -17,7 +17,8 @@
         <arg name="gz_args" value="$(find-pkg-share tomauto1_bringup)/worlds/dpt3.sdf -r" />
     </include>
 
-    <node pkg="ros_gz_sim" exec="create" args="-topic robot_description" />
+<!-- Sets the initial position of the robot in gazebo, make sure these values match with nav2_params.yaml -->
+    <node pkg="ros_gz_sim" exec="create" args="-topic robot_description -x -1.5 -y 0 -z 0" />
 
     <node pkg="ros_gz_bridge" exec="parameter_bridge">
         <param name="config_file" value="$(var gazebo_config_path)" />
@@ -29,6 +30,10 @@
     <include file="$(find-pkg-share nav2_bringup)/launch/bringup_launch.py">
         <arg name="map"
              value="/home/daniel/projects/foodlikeair/tomauto1/src/tomauto1_bringup/maps/dpt3/dpt3.yaml"/>
+
+        <!-- Comment this out if you want to use the default nav_2_params rather than this project's -->
+        <arg name="params_file"
+             value="$(find-pkg-share tomauto1_bringup)/config/nav2_params.yaml"/>
 
         <arg name="use_sim_time" value="True"/>
     </include>
