@@ -17,7 +17,8 @@
         <arg name="gz_args" value="$(find-pkg-share tomauto1_bringup)/worlds/dpt3.sdf -r" />
     </include>
 
-    <node pkg="ros_gz_sim" exec="create" args="-topic robot_description" />
+<!-- Sets the initial position of the robot in gazebo, make sure these values match with nav2_params.yaml -->
+    <node pkg="ros_gz_sim" exec="create" args="-topic robot_description -x -1.5 -y 0 -z 0" />
 
     <node pkg="ros_gz_bridge" exec="parameter_bridge">
         <param name="config_file" value="$(var gazebo_config_path)" />
