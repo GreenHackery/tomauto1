@@ -10,11 +10,6 @@
     <link name="base_footprint" />
 
     <link name="base_link">
-        <gazebo>
-            <plugin filename="gz_ros2_control-system" name="gz_ros2_control::GazeboSimROS2ControlPlugin">
-                <parameters>$(find tomauto1_bringup)/config/tomauto1_controllers.yaml</parameters>
-            </plugin>
-        </gazebo>
         <visual>
             <geometry>
                 <box size="${base_length} ${base_width} ${base_height}" />

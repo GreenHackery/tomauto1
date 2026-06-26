@@ -32,4 +32,19 @@
         </plugin>
     </gazebo>
 
+    <gazebo>
+        <plugin filename="gz_ros2_control-system" name="gz_ros2_control::GazeboSimROS2ControlPlugin">
+            <parameters>$(find tomauto1_bringup)/config/tomauto1_controllers.yaml</parameters>
+        </plugin>
+    </gazebo>
+
+  <!-- <gazebo>
+    <plugin
+      filename="gz-sim-sensors-system"
+      name="gz::sim::systems::Sensors">
+      <render_engine>ogre2</render_engine>
+    </plugin>
+  </gazebo> -->
+
+
 </robot>
