@@ -10,7 +10,7 @@
           </geometry>
           <!-- Position the visual relative to the link's origin -->
           <origin xyz="0 0 0" rpy="0 0 0"/>
-          <material name="grey"/>
+          <!-- <material name="grey"/> -->
       </visual>
       <collision>
           <geometry>
@@ -49,13 +49,7 @@
                       <min_angle>-3.14</min_angle>
                       <max_angle>3.14</max_angle>
                   </horizontal>
-                  <!-- This does not work correctly -->
-                  <!-- <vertical>
-                      <samples>360</samples>
-                      <resolution>1</resolution>
-                      <min_angle>3.14</min_angle>
-                      <max_angle>3.14</max_angle>
-                  </vertical> -->
+
               </scan>
               <range>
                   <min>0.1</min>
