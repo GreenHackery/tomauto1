@@ -10,6 +10,11 @@
     <link name="base_footprint" />
 
     <link name="base_link">
+        <gazebo>
+            <plugin filename="gz_ros2_control-system" name="gz_ros2_control::GazeboSimROS2ControlPlugin">
+                <parameters>$(find tomauto1_bringup)/config/tomauto1_controllers.yaml</parameters>
+            </plugin>
+        </gazebo>
         <visual>
             <geometry>
                 <box size="${base_length} ${base_width} ${base_height}" />
@@ -41,7 +46,7 @@
             </geometry>
             <origin xyz="0 0 0" rpy="0 0 0" />
         </collision>
-        <xacro:cylinder_inertia m="1.0" r="${wheel_radius}" l="${wheel_length}"
+        <xacro:cylinder_inertia m="0.2" r="${wheel_radius}" l="${wheel_length}"
                                 o_xyz="0 0 0" o_rpy="${pi / 2.0} 0 0" />
     </link>
 
@@ -59,7 +64,7 @@
             </geometry>
             <origin xyz="0 0 0" rpy="0 0 0" />
         </collision>
-        <xacro:cylinder_inertia m="1.0" r="${wheel_radius}" l="${wheel_length}"
+        <xacro:cylinder_inertia m="0.2" r="${wheel_radius}" l="${wheel_length}"
                                 o_xyz="0 0 0" o_rpy="${pi / 2.0} 0 0" />
     </link>
 
@@ -77,7 +82,7 @@
             </geometry>
             <origin xyz="0 0 0" rpy="0 0 0" />
         </collision>
-        <xacro:cylinder_inertia m="1.0" r="${wheel_radius}" l="${wheel_length}"
+        <xacro:cylinder_inertia m="0.2" r="${wheel_radius}" l="${wheel_length}"
                                 o_xyz="0 0 0" o_rpy="${pi / 2.0} 0 0" />
     </link>
 
@@ -95,7 +100,7 @@
             </geometry>
             <origin xyz="0 0 0" rpy="0 0 0" />
         </collision>
-        <xacro:cylinder_inertia m="1.0" r="${wheel_radius}" l="${wheel_length}"
+        <xacro:cylinder_inertia m="0.2" r="${wheel_radius}" l="${wheel_length}"
                                 o_xyz="0 0 0" o_rpy="${pi / 2.0} 0 0" />
     </link>
 
