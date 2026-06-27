@@ -69,3 +69,7 @@ terminator -l launch_ros
 
 ## Useful resources
 1. Lidar code: https://github.com/ldrobotSensorTeam/ldlidar_stl_ros2/tree/master/ldlidar_driver
+
+### For killing all ros and related processes.
+alias kill_ros='pkill -9 -f "ros2|rviz|gazebo|gzserver|gzclient|gz"'
+
