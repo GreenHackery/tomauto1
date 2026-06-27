@@ -4,8 +4,11 @@
     <ros2_control name="MobileBase" type="system">
         <hardware>
             <!-- Uncomment the below 2 lines to run with mock hardware -->
-            <plugin>mock_components/GenericSystem</plugin>
-            <param name="calculate_dynamics">true</param>
+            <!-- <plugin>mock_components/GenericSystem</plugin>
+            <param name="calculate_dynamics">true</param> -->
+
+            <!-- Mocks for working with gazebo -->
+            <plugin>gz_ros2_control/GazeboSimSystem</plugin>
 
             <!-- Uncomment the below 4 lines to run with real hardware -->
             <!-- <plugin>mobile_base_hardware/MobileBaseHardwareInterface</plugin>
@@ -13,8 +16,7 @@
             <param name="back_right_motor_id">20</param>
             <param name="front_left_motor_id">30</param>
             <param name="front_right_motor_id">40</param> -->
-
-            <param name="dynamixel_port">/dev/ttyACM0</param>
+            <!-- <param name="dynamixel_port">/dev/ttyACM0</param> -->
         </hardware>
         <joint name="back_right_wheel_joint">
             <command_interface name="velocity" />

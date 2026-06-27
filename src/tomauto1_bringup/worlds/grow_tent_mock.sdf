@@ -175,34 +175,6 @@
       </link>
     </model>
 
-    <!-- CENTER DIVIDER WALL -->
-    <model name="center_wall">
-      <static>true</static>
-
-      <!-- Attached to north wall, extends 0.7 m south -->
-      <pose>0 0.35 0.15 0 0 0</pose>
-
-      <link name="link">
-
-        <collision name="collision">
-          <geometry>
-            <box>
-              <size>0.15 0.60 0.30</size>
-            </box>
-          </geometry>
-        </collision>
-
-        <visual name="visual">
-          <geometry>
-            <box>
-              <size>0.15 0.60 0.30</size>
-            </box>
-          </geometry>
-        </visual>
-
-      </link>
-    </model>
-
     <!-- LIGHT -->
 
     <light name="sun_light" type="directional">
@@ -224,6 +196,30 @@
       <direction>-0.5 0.1 -1</direction>
 
     </light>
+
+        <!-- NORTH WALL CENTER PILLAR -->
+    <model name="north_wall_pillar">
+      <static>true</static>
+      <pose>0 0.5238 0.15 0 0 0</pose>
+
+      <link name="link">
+        <collision name="collision">
+          <geometry>
+            <box>
+              <size>0.1524 0.1524 0.30</size>
+            </box>
+          </geometry>
+        </collision>
+
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>0.1524 0.1524 0.30</size>
+            </box>
+          </geometry>
+        </visual>
+      </link>
+    </model>
 
   </world>
 

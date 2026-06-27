@@ -1,52 +1,56 @@
 <launch>
     <let name="urdf_path" 
-         value="$(find-pkg-share tomauto1_description)/urdf/tomauto1.urdf.xacro" />
+        value="$(find-pkg-share tomauto1_description)/urdf/tomauto1.urdf.xacro" />
     <let name="gazebo_config_path"
-         value="$(find-pkg-share tomauto1_bringup)/config/gazebo_bridge.yaml" />
+        value="$(find-pkg-share tomauto1_bringup)/config/gazebo_bridge.yaml" />
     <let name="rviz_config_path"
-         value="$(find-pkg-share tomauto1_description)/rviz/nav2_lidar.rviz" />
+        value="$(find-pkg-share tomauto1_description)/rviz/nav2_lidar.rviz" />
 
     <node pkg="robot_state_publisher" exec="robot_state_publisher">
         <param name="robot_description"
-               value="$(command 'xacro $(var urdf_path)')" />
+            value="$(command 'xacro $(var urdf_path)')" />
         <param name="use_sim_time" value="true" />
     </node>
-    
 
     <include file="$(find-pkg-share ros_gz_sim)/launch/gz_sim.launch.py">
         <arg name="gz_args" value="$(find-pkg-share tomauto1_bringup)/worlds/dpt3.sdf -r" />
     </include>
 
-<!-- Sets the initial position of the robot in gazebo, make sure these values match with nav2_params.yaml -->
-    <node pkg="ros_gz_sim" exec="create" args="-topic robot_description -x -1.5 -y 0 -z 0" />
+    <node pkg="ros_gz_sim" exec="create" args="-topic robot_description" />
 
     <node pkg="ros_gz_bridge" exec="parameter_bridge">
         <param name="config_file" value="$(var gazebo_config_path)" />
     </node>
 
+    <!-- ✅ Only ONE spawner for diff_drive_controller -->
+<node pkg="controller_manager" exec="spawner" 
+    args="diff_drive_controller --controller-manager /controller_manager">
+    <remap from="/diff_drive_controller/odom" to="/odom" />
+    <remap from="/diff_drive_controller/cmd_vel" to="/cmd_vel" />
+</node>
+
+    <node pkg="controller_manager" exec="spawner" 
+        args="joint_state_broadcaster --controller-manager /controller_manager" />
+
     <node pkg="rviz2" exec="rviz2" output="screen" 
-          args="-d $(var rviz_config_path)" />
+        args="-d $(var rviz_config_path)" />
+
+    <!-- ✅ Relay /cmd_vel (Twist) to /diff_drive_controller/cmd_vel (TwistStamped) -->
+    <node pkg="topic_tools" exec="relay" 
+        args="/cmd_vel /diff_drive_controller/cmd_vel" />
+
+<node pkg="twist_stamper" exec="twist_stamper" name="twist_stamper">
+    <param name="frame_id" value="base_link" />
+    <remap from="cmd_vel_in" to="/cmd_vel" />
+    <remap from="cmd_vel_out" to="/diff_drive_controller/cmd_vel" />
+</node>
 
     <include file="$(find-pkg-share nav2_bringup)/launch/bringup_launch.py">
         <arg name="map"
-             value="/home/daniel/projects/foodlikeair/tomauto1/src/tomauto1_bringup/maps/dpt3/dpt3.yaml"/>
-
-        <!-- Comment this out if you want to use the default nav_2_params rather than this project's -->
+            value="/home/daniel/projects/foodlikeair/tomauto1/src/tomauto1_bringup/maps/dpt3/dpt3.yaml"/>
         <arg name="params_file"
-             value="$(find-pkg-share tomauto1_bringup)/config/nav2_params.yaml"/>
-
+            value="$(find-pkg-share tomauto1_bringup)/config/nav2_params.yaml"/>
         <arg name="use_sim_time" value="True"/>
     </include>
-    
-    <!-- <node 
-        pkg="tf2_ros" 
-        exec="static_transform_publisher" 
-        name="scan_to_map" 
-        args="0 0 0 0 0 0 map scan" /> -->
-<!-- 
-    <include file="$(find-pkg-share slam_toolbox)/launch/online_async_launch.py">
-        <arg name="params_file" value="$(find-pkg-share tomauto1_bringup)/config/mapper_params_online_async.yaml" />
-        <arg name="use_sim_time" value="true" />
-    </include> -->
 
 </launch>
