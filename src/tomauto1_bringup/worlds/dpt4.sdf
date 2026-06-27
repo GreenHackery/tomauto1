@@ -1,0 +1,393 @@
+<?xml version="1.0" ?>
+<sdf version="1.7">
+
+  <world name="default">
+
+    <gravity>0 0 -9.8</gravity>
+
+    <magnetic_field>6e-6 2.3e-5 -4.2e-5</magnetic_field>
+
+    <atmosphere type="adiabatic"/>
+
+    <scene>
+      <ambient>0.4 0.4 0.4 1</ambient>
+      <background>0.7 0.7 0.7 1</background>
+      <shadows>true</shadows>
+    </scene>
+
+    <physics name='1ms' type='ignored'>
+      <max_step_size>0.001</max_step_size>
+      <real_time_factor>1</real_time_factor>
+      <real_time_update_rate>1000</real_time_update_rate>
+    </physics>
+
+    <plugin name='gz::sim::systems::Physics' filename='gz-sim-physics-system'/>
+    <plugin name='gz::sim::systems::UserCommands' filename='gz-sim-user-commands-system'/>
+    <plugin name='gz::sim::systems::SceneBroadcaster' filename='gz-sim-scene-broadcaster-system'/>
+    <plugin name='gz::sim::systems::Contact' filename='gz-sim-contact-system'/>
+    <plugin name='gz::sim::systems::Sensors' filename='gz-sim-sensors-system'>
+      <render_engine>ogre2</render_engine>
+    </plugin>
+
+    <!-- ========================= -->
+    <!-- LIGHT -->
+    <!-- ========================= -->
+
+    <light name="sun_light" type="directional">
+      <cast_shadows>true</cast_shadows>
+      <pose>0 0 20 0 0 0</pose>
+      <diffuse>1 1 1 1</diffuse>
+      <specular>0.2 0.2 0.2 1</specular>
+      <attenuation>
+        <range>1000</range>
+        <constant>0.9</constant>
+        <linear>0.01</linear>
+        <quadratic>0.001</quadratic>
+      </attenuation>
+      <direction>-0.5 0.1 -1</direction>
+    </light>
+
+    <!-- ========================= -->
+    <!-- GROUND -->
+    <!-- ========================= -->
+
+    <model name="ground">
+      <static>true</static>
+      <pose>0 0 -0.5 0 0 0</pose>
+      <link name="ground_link">
+        <collision name="ground_collision">
+          <geometry>
+            <box>
+              <size>100 100 1</size>
+            </box>
+          </geometry>
+          <surface>
+            <friction>
+              <ode>
+                <mu>1.0</mu>
+                <mu2>1.0</mu2>
+              </ode>
+            </friction>
+            <contact><ode/></contact>
+          </surface>
+        </collision>
+        <visual name="ground_visual">
+          <geometry>
+            <box>
+              <size>100 100 1</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.3 0.3 0.3 1</ambient>
+            <diffuse>0.3 0.3 0.3 1</diffuse>
+          </material>
+        </visual>
+      </link>
+    </model>
+
+    <!-- ========================= -->
+    <!-- WALLS -->
+    <!-- Same 2m x 2m interior as original dpt4.
+         Walls are 0.05 m thick and 0.5 m tall.
+         Each wall now has a rectangular bay notch cut in via a
+         separate recessed-block model placed flush against the
+         inner wall face. This breaks up the flat returns and gives
+         the lidar unique landmarks on every side. -->
+    <!-- ========================= -->
+
+    <model name="south_wall">
+      <static>true</static>
+      <pose>0 -1.025 0.25 0 0 0</pose>
+      <link name="link">
+        <collision name="collision">
+          <geometry><box><size>2.05 0.05 0.5</size></box></geometry>
+        </collision>
+        <visual name="visual">
+          <geometry><box><size>2.05 0.05 0.5</size></box></geometry>
+          <material>
+            <ambient>0.5 0.5 0.5 1</ambient>
+            <diffuse>0.6 0.6 0.6 1</diffuse>
+          </material>
+        </visual>
+      </link>
+    </model>
+
+    <model name="north_wall">
+      <static>true</static>
+      <pose>0 1.025 0.25 0 0 0</pose>
+      <link name="link">
+        <collision name="collision">
+          <geometry><box><size>2.05 0.05 0.5</size></box></geometry>
+        </collision>
+        <visual name="visual">
+          <geometry><box><size>2.05 0.05 0.5</size></box></geometry>
+          <material>
+            <ambient>0.5 0.5 0.5 1</ambient>
+            <diffuse>0.6 0.6 0.6 1</diffuse>
+          </material>
+        </visual>
+      </link>
+    </model>
+
+    <model name="west_wall">
+      <static>true</static>
+      <pose>-1.025 0 0.25 0 0 0</pose>
+      <link name="link">
+        <collision name="collision">
+          <geometry><box><size>0.05 2.05 0.5</size></box></geometry>
+        </collision>
+        <visual name="visual">
+          <geometry><box><size>0.05 2.05 0.5</size></box></geometry>
+          <material>
+            <ambient>0.5 0.5 0.5 1</ambient>
+            <diffuse>0.6 0.6 0.6 1</diffuse>
+          </material>
+        </visual>
+      </link>
+    </model>
+
+    <model name="east_wall">
+      <static>true</static>
+      <pose>1.025 0 0.25 0 0 0</pose>
+      <link name="link">
+        <collision name="collision">
+          <geometry><box><size>0.05 2.05 0.5</size></box></geometry>
+        </collision>
+        <visual name="visual">
+          <geometry><box><size>0.05 2.05 0.5</size></box></geometry>
+          <material>
+            <ambient>0.5 0.5 0.5 1</ambient>
+            <diffuse>0.6 0.6 0.6 1</diffuse>
+          </material>
+        </visual>
+      </link>
+    </model>
+
+    <!-- ========================= -->
+    <!-- WALL BAY PROTRUSIONS -->
+    <!-- Small blocks protruding 0.08 m inward from each wall face,
+         offset from centre so each wall's landmark is at a unique
+         lateral position. The lidar sees a step change in each wall
+         return, giving it four unambiguous reference features — one
+         per wall — that anchor scan matching and suppress drift. -->
+    <!-- ========================= -->
+
+    <!-- South wall bay: offset +0.3 m east of centre -->
+    <model name="south_bay">
+      <static>true</static>
+      <pose>0.3 -0.975 0.25 0 0 0</pose>
+      <link name="link">
+        <collision name="collision">
+          <geometry><box><size>0.3 0.08 0.5</size></box></geometry>
+        </collision>
+        <visual name="visual">
+          <geometry><box><size>0.3 0.08 0.5</size></box></geometry>
+          <material>
+            <ambient>0.5 0.5 0.5 1</ambient>
+            <diffuse>0.6 0.6 0.6 1</diffuse>
+          </material>
+        </visual>
+      </link>
+    </model>
+
+    <!-- North wall bay: offset -0.3 m west of centre -->
+    <model name="north_bay">
+      <static>true</static>
+      <pose>-0.3 0.975 0.25 0 0 0</pose>
+      <link name="link">
+        <collision name="collision">
+          <geometry><box><size>0.3 0.08 0.5</size></box></geometry>
+        </collision>
+        <visual name="visual">
+          <geometry><box><size>0.3 0.08 0.5</size></box></geometry>
+          <material>
+            <ambient>0.5 0.5 0.5 1</ambient>
+            <diffuse>0.6 0.6 0.6 1</diffuse>
+          </material>
+        </visual>
+      </link>
+    </model>
+
+    <!-- West wall bay: offset +0.3 m north of centre -->
+    <model name="west_bay">
+      <static>true</static>
+      <pose>-0.975 0.3 0.25 0 0 0</pose>
+      <link name="link">
+        <collision name="collision">
+          <geometry><box><size>0.08 0.3 0.5</size></box></geometry>
+        </collision>
+        <visual name="visual">
+          <geometry><box><size>0.08 0.3 0.5</size></box></geometry>
+          <material>
+            <ambient>0.5 0.5 0.5 1</ambient>
+            <diffuse>0.6 0.6 0.6 1</diffuse>
+          </material>
+        </visual>
+      </link>
+    </model>
+
+    <!-- East wall bay: offset -0.3 m south of centre -->
+    <model name="east_bay">
+      <static>true</static>
+      <pose>0.975 -0.3 0.25 0 0 0</pose>
+      <link name="link">
+        <collision name="collision">
+          <geometry><box><size>0.08 0.3 0.5</size></box></geometry>
+        </collision>
+        <visual name="visual">
+          <geometry><box><size>0.08 0.3 0.5</size></box></geometry>
+          <material>
+            <ambient>0.5 0.5 0.5 1</ambient>
+            <diffuse>0.6 0.6 0.6 1</diffuse>
+          </material>
+        </visual>
+      </link>
+    </model>
+
+    <!-- ========================= -->
+    <!-- NE PILLAR (replaces original cube) -->
+    <!-- Wider square box: 0.15 x 0.15 m base, 0.5 m tall.
+         Larger flat faces give stronger, more consistent returns. -->
+    <!-- ========================= -->
+
+    <model name="cube">
+      <static>true</static>
+      <pose>0.4 0.4 0.25 0 0 0</pose>
+      <link name="link">
+        <self_collide>false</self_collide>
+        <inertial>
+          <mass>1.0</mass>
+          <inertia>
+            <ixx>0.166</ixx><iyy>0.166</iyy><izz>0.166</izz>
+            <ixy>0</ixy><ixz>0</ixz><iyz>0</iyz>
+          </inertia>
+        </inertial>
+        <collision name="collision">
+          <geometry><box><size>0.15 0.15 0.5</size></box></geometry>
+          <surface>
+            <friction><ode><mu>1.0</mu><mu2>1.0</mu2></ode></friction>
+            <contact><ode/></contact>
+          </surface>
+        </collision>
+        <visual name="visual">
+          <geometry><box><size>0.15 0.15 0.5</size></box></geometry>
+          <material>
+            <ambient>0.8 0.2 0.2 1</ambient>
+            <diffuse>0.9 0.2 0.2 1</diffuse>
+          </material>
+        </visual>
+      </link>
+    </model>
+
+    <!-- ========================= -->
+    <!-- NW PILLAR (replaces cylinder) -->
+    <!-- Square box instead of cylinder: 0.15 x 0.15 m.
+         Flat faces give reliable multi-point returns vs the
+         single-point returns a curved cylinder produces. -->
+    <!-- ========================= -->
+
+    <model name="cylinder">
+      <static>true</static>
+      <pose>-0.4 0.4 0.25 0 0 0</pose>
+      <link name="link">
+        <self_collide>false</self_collide>
+        <inertial>
+          <mass>1.0</mass>
+          <inertia>
+            <ixx>0.166</ixx><iyy>0.166</iyy><izz>0.166</izz>
+            <ixy>0</ixy><ixz>0</ixz><iyz>0</iyz>
+          </inertia>
+        </inertial>
+        <collision name="collision">
+          <geometry><box><size>0.15 0.15 0.5</size></box></geometry>
+          <surface>
+            <friction><ode><mu>1.0</mu><mu2>1.0</mu2></ode></friction>
+            <contact><ode/></contact>
+          </surface>
+        </collision>
+        <visual name="visual">
+          <geometry><box><size>0.15 0.15 0.5</size></box></geometry>
+          <material>
+            <ambient>0.2 0.2 0.8 1</ambient>
+            <diffuse>0.2 0.2 0.9 1</diffuse>
+          </material>
+        </visual>
+      </link>
+    </model>
+
+    <!-- ========================= -->
+    <!-- SW PILLAR (replaces triangular prism) -->
+    <!-- Wider square box: 0.15 x 0.15 m.
+         The original prism's narrow apex and angled faces caused
+         ambiguous returns. Flat orthogonal faces are far more
+         reliable for scan matching. -->
+    <!-- ========================= -->
+
+    <model name="triangle_prism">
+      <static>true</static>
+      <pose>-0.4 -0.4 0.25 0 0 0</pose>
+      <link name="link">
+        <self_collide>false</self_collide>
+        <inertial>
+          <mass>1.0</mass>
+          <inertia>
+            <ixx>0.166</ixx><iyy>0.166</iyy><izz>0.166</izz>
+            <ixy>0</ixy><ixz>0</ixz><iyz>0</iyz>
+          </inertia>
+        </inertial>
+        <collision name="collision">
+          <geometry><box><size>0.15 0.15 0.5</size></box></geometry>
+          <surface>
+            <friction><ode><mu>1.0</mu><mu2>1.0</mu2></ode></friction>
+            <contact><ode/></contact>
+          </surface>
+        </collision>
+        <visual name="visual">
+          <geometry><box><size>0.15 0.15 0.5</size></box></geometry>
+          <material>
+            <ambient>0.2 0.8 0.2 1</ambient>
+            <diffuse>0.2 0.9 0.2 1</diffuse>
+          </material>
+        </visual>
+      </link>
+    </model>
+
+    <!-- ========================= -->
+    <!-- SE PILLAR (new — fills previously empty corner) -->
+    <!-- Fills the empty SE quadrant. Now all four quadrants have a
+         feature, so the lidar always sees landmarks regardless of
+         the robot's heading or position within the arena. -->
+    <!-- ========================= -->
+
+    <model name="se_pillar">
+      <static>true</static>
+      <pose>0.4 -0.4 0.25 0 0 0</pose>
+      <link name="link">
+        <self_collide>false</self_collide>
+        <inertial>
+          <mass>1.0</mass>
+          <inertia>
+            <ixx>0.166</ixx><iyy>0.166</iyy><izz>0.166</izz>
+            <ixy>0</ixy><ixz>0</ixz><iyz>0</iyz>
+          </inertia>
+        </inertial>
+        <collision name="collision">
+          <geometry><box><size>0.15 0.15 0.5</size></box></geometry>
+          <surface>
+            <friction><ode><mu>1.0</mu><mu2>1.0</mu2></ode></friction>
+            <contact><ode/></contact>
+          </surface>
+        </collision>
+        <visual name="visual">
+          <geometry><box><size>0.15 0.15 0.5</size></box></geometry>
+          <material>
+            <ambient>0.8 0.5 0.1 1</ambient>
+            <diffuse>0.9 0.6 0.1 1</diffuse>
+          </material>
+        </visual>
+      </link>
+    </model>
+
+  </world>
+
+</sdf>
