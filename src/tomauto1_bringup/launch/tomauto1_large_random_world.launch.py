@@ -71,6 +71,15 @@ def generate_launch_description():
         ]
     )
 
+    # fox_glove = Node(
+    #     package='foxglove_bridge',
+    #     executable='foxglove_bridge',
+    #     parameters=[{
+    #         'use_sim_time': True,
+    #         'port': 8765,
+    #     }]
+    # )
+
     rviz = Node(
         package='rviz2',
         executable='rviz2',
